@@ -1,0 +1,6 @@
+/static/js/vendors/*
+     cache-control: public, max-age=2629746
+/assets/fonts/*
+     cache-control: public, max-age=2629746
+/assets/branding/*
+     cache-control: public, max-age=2629746
