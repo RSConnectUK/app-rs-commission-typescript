@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { withRouter } from 'react-router-dom';
 
 // Components
-
+import { AppState } from '../../utils/state';
 import ScreenContainer from './Layout/ScreenContainer';
 import { IonList, IonItem, IonInput, IonLabel, IonSelect, IonSelectOption, IonButton } from '@ionic/react';
 import ScreenModal from '../../components/others/ScreenModal';
@@ -20,6 +20,7 @@ const ExportingComponent = (props: any) => {
   const [jobData, setJobData] = useState<any>({ voucher: null, imei: null, serial: null, position: null });
   const [extraDetails, setExtraDetails] = useState<any>([]);
 
+  const { account } = AppState();
   const install_locations = [`Dash, Passenger Side`, `Dash, Centre`, `Dash, Driver Side`, `Centre Console Front`, `Centre Console Rear`, `Boot, Passenger Side`, `Boot, Centre`, `Boot, Driver Side`, `Engine Bay`];
 
   const closeModal = () => {
@@ -67,7 +68,7 @@ const ExportingComponent = (props: any) => {
       voucher: jobData.voucher,
       imei: jobData.imei,
       serial: jobData.serial,
-      engineerId: jobData.engineer_id,
+      engineerId: account.engineer_id,
       sensorPosition: jobData.position,
       ...coords
     }

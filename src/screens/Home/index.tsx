@@ -30,8 +30,8 @@ const ExportingComponent = (props: any) => {
           <div>User: {account.details.OctoUser}</div>
           <div>Pass: {account.details.OctoPass}</div>
         </Card>
-        <Card title="T2 Commissioning" submit={() => props.history.push("/t2")}>
-        </Card>
+        <Card title="T2 Commissioning" submit={() => props.history.push("/t2")}/>
+        <Card title="Trak Commissioning" submit={() => props.history.push("/trak")}/>
       </IonList>
     </div>
   </ScreenContainer>
