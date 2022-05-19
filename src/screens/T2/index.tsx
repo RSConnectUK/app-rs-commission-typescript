@@ -17,7 +17,7 @@ const ExportingComponent = (props: any) => {
   const [submitted, setSubmitted] = useState(false);
   const [activationStatus, SetActivationStatus] = useState<string>();
   const [activationDate, SetActivationDate] = useState<string>();
-  const [jobData, setJobData] = useState<any>({ voucher: null, imei: null, serial: null, position: null });
+  const [jobData, setJobData] = useState<any>({ voucher: null, imei: null, serial: null, reg: null, position: null });
   const [extraDetails, setExtraDetails] = useState<any>([]);
 
   const install_locations = [`Dash, Passenger Side`, `Dash, Centre`, `Dash, Driver Side`, `Centre Console Front`, `Centre Console Rear`, `Boot, Passenger Side`, `Boot, Centre`, `Boot, Driver Side`, `Engine Bay`];
@@ -67,7 +67,7 @@ const ExportingComponent = (props: any) => {
       voucher: jobData.voucher,
       imei: jobData.imei,
       serial: jobData.serial,
-      engineerId: jobData.engineer_id,
+      reg: jobData.reg,
       sensorPosition: jobData.position,
       ...coords
     }
@@ -76,20 +76,20 @@ const ExportingComponent = (props: any) => {
 
     try {
       createAmplitudeEvent(`Tapped Activate Device`)
-      const { data } = await Axios(`https://pfacwtzotj.execute-api.eu-west-2.amazonaws.com/live/commission`, {
+      const { data } = await Axios(`https://6chkcoll6c.execute-api.eu-west-2.amazonaws.com/live/commission/ttwo`, {
         method: `POST`,
         headers: {
           'x-api-key': 'ChO0RgyV2x2PtPb3cHcPP7lfqd6JOTvL6XFZsKfd'
         },
         data: bodyRequest
       })
-      logError(`OCTO_ACTIVATION_SUCCESS`, {}, { response_received: data, body_sent: bodyRequest })
+      logError(`T2_ACTIVATION_SUCCESS`, {}, { response_received: data, body_sent: bodyRequest })
       SetActivationStatus("Success")
       SetActivationDate(moment(new Date()).format(`HH:mm:ss`));
       setExtraDetails(data.message ? [{ text: `Message`, value: data.message }] : []);
       createAmplitudeEvent(`Device activated`);
     } catch (err: any) {
-      logError(`OCTO_ACTIVATION_FAILURE`, err, bodyRequest)
+      logError(`T2_ACTIVATION_FAILURE`, err, bodyRequest)
       createAmplitudeEvent(`Having Difficulties`, { reason: `Failed to activate device`, failed_info: err })
       SetActivationStatus("Failure")
       SetActivationDate(moment(new Date()).format(`HH:mm:ss`));
@@ -106,6 +106,31 @@ const ExportingComponent = (props: any) => {
     }
     setSubmitted(false);
   }
+
+  const checkBox = async () => {
+    setSubmitted(true);
+    try {
+      createAmplitudeEvent(`Tapped Check Box`)
+      const { data } = await Axios(`https://6chkcoll6c.execute-api.eu-west-2.amazonaws.com/live/commission/ttwo/check/${jobData.imei}}`, {
+        method: `GET`,
+        headers: {
+          'x-api-key': 'ChO0RgyV2x2PtPb3cHcPP7lfqd6JOTvL6XFZsKfd'
+        }
+      })
+      logError(`CHECK_BOX_T2_SUCCESS`, {}, { response_received: data, body_sent: { imei: data.imei } })
+      createAmplitudeEvent(`Check Successful`)
+      getDetailsUpdated(data);
+    } catch (err) {
+      logError(`CHECK_BOX_T2_ERROR`, err);
+      createAmplitudeEvent(`Having Difficulties`, { reason: `Failed to check box`, failed_info: err });
+      showAlert({
+        header: `Failure`,
+        message: `Failed to check box due to an unknown server error. Please try again or contact our support team.`
+      })
+    }
+    setSubmitted(false);
+  }
+
   const getActivationStatus = () => {
     const status = activationStatus;
     if (submitted) return `Loading..`;
@@ -145,6 +170,10 @@ const ExportingComponent = (props: any) => {
             <IonInput id="serial" value={jobData.serial} onIonChange={onInputChange}></IonInput>
           </IonItem>
           <IonItem>
+            <IonLabel position="floating">Car Reg</IonLabel>
+            <IonInput id="reg" value={jobData.reg} onIonChange={onInputChange}></IonInput>
+          </IonItem>
+          <IonItem>
             <IonLabel position="floating">Position</IonLabel>
             <IonSelect id="position" onIonChange={onInputPosChange}>
               {
@@ -157,7 +186,7 @@ const ExportingComponent = (props: any) => {
         </IonList>
     </ScreenContainer>
     {
-      opened === true && <ScreenModal title={`OCTO Commissioning`} disabledClose={submitted} onClose={closeModal} className="commission-modal">
+      opened === true && <ScreenModal title={`T2 Commissioning`} disabledClose={submitted} onClose={closeModal} className="commission-modal">
         <div className="box">
           <div className="status">Activation status: <span className={getActivationStatus().toString().toLowerCase()}>{getActivationStatus()}</span></div>
           {
@@ -166,6 +195,7 @@ const ExportingComponent = (props: any) => {
               <div className="hint-start">Tap 'Activate Device' to continue</div>
           }
           <IonButton className="cta-button" disabled={submitted} onClick={submit}>{submitted ? `Awaiting results..` : `Activate Device`}</IonButton>
+          <IonButton className="cta-button" disabled={submitted} onClick={checkBox}>Check Box</IonButton>
           <div className="support-information">
             <span>If this does not work, please phone <a href="tel:01213321230">0121 332 1230</a>. </span>
             <span>You should be as close to the box as is possible.</span>

@@ -58,11 +58,17 @@ const Component = (props: any) => {
     props.updateValidation(props.identifier, isValid);
     setIsValid(isValid);
   }
+
   const openModal = () => {
-    if (DeviceMotionEvent !== undefined) {
+    if ((DeviceMotionEvent as any) !== undefined && (DeviceMotionEvent as any).requestPermission !== undefined) { // Safari Support
+      (DeviceMotionEvent as any).requestPermission()
+        .then((response: any) => {
+          if (response === 'granted') {
             setOpened(true);
             setMotion({ x: 0, y: 0, z: 0 })
             setOrientations({ car: null, box: null });
+          } else onOrientationError(`Permission not granted`);
+        })
     } else { //Chrome
       setOpened(true);
       setMotion({ x: 0, y: 0, z: 0 })
@@ -132,6 +138,7 @@ const Component = (props: any) => {
   const resetData = () => {
     setMotion({ x: 0, y: 0, z: 0 })
     setOrientations({ car: null, box: null });
+    props.setMeta(props.identifier, null);
     validateComponent(null);
   }
 

@@ -6,6 +6,7 @@ import { IonList } from '@ionic/react';
 // Components
 import Card from './Components/Card';
 import ScreenContainer from './Layout/ScreenContainer';
+import { AppState } from '../../utils/state';
 
 const ExportingComponent = (props: any) => {
   const [submitted, setSubmitted] = useState<boolean>(false);
@@ -14,6 +15,8 @@ const ExportingComponent = (props: any) => {
   // eslint-disable-next-line
   const [inBackground, setInBackground] = useState(false);
 
+
+  const { account } = AppState();
   const screenProps = {
     screenMounted,
     submitted,
@@ -23,7 +26,12 @@ const ExportingComponent = (props: any) => {
   return <ScreenContainer {...screenProps}>
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <IonList className="list-contacts" lines="none">
-        <Card title="OCTO Commissioning" subtitle="Click to Commission an OCTO Unit" submit={() => props.history.push("/octo")}/>
+        <Card title="OCTO Commissioning" submit={() => props.history.push("/octo")}>
+          <div>User: {account.details.OctoUser}</div>
+          <div>Pass: {account.details.OctoPass}</div>
+        </Card>
+        <Card title="T2 Commissioning" submit={() => props.history.push("/t2")}>
+        </Card>
       </IonList>
     </div>
   </ScreenContainer>

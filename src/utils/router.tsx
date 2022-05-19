@@ -6,6 +6,7 @@ import Home from '../screens/Home/index';
 import Authenticate from '../screens/Authenticate/index';
 import Profile from '../screens/Profile';
 import Octo from '../screens/Octo';
+import T2 from '../screens/T2';
 
 const Private = ({ acc, ...props }: any) => acc !== null ? <Route {...props} /> : <Redirect to="/screens/authentication" />;
 const Guest = ({ acc, ...props }: any) => acc === null ? <Route {...props} /> : <Redirect to="/" />;
@@ -20,6 +21,7 @@ const ExportingComponent = () => {
         <Private acc={account} exact path="/" component={Home} />
         <Private acc={account} exact path="/profile" component={Profile} />
         <Private acc={account} exact path="/octo" component={Octo} />
+        <Private acc={account} exact path="/t2" component={T2} />
       </Switch>
     </Router>
   </React.Fragment>
