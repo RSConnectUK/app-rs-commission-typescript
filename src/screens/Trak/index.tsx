@@ -9,6 +9,7 @@ import ScreenModal from '../../components/others/ScreenModal';
 import ComResults from '../../components/others/CommissioningResults';
 import { createAmplitudeEvent, logError, makeConnectedAPIRequest, showAlert } from '../../utils/helpers';
 import moment from 'moment';
+import DeviceOrientations from '../../components/others/DeviceOrientations';
 
 const ExportingComponent = (props: any) => {
   // eslint-disable-next-line
@@ -222,6 +223,9 @@ const ExportingComponent = (props: any) => {
                 <IonSelectOption>{location[1]}</IonSelectOption>)
               }
             </IonSelect>
+          </IonItem>
+          <IonItem>
+            <DeviceOrientations/>
           </IonItem>
           <IonButton expand='block' onClick={() => setOpened(true)}>Commission</IonButton>
         </IonList>

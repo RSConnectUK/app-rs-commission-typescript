@@ -147,7 +147,7 @@ const Component = (props: any) => {
       <div className="container">
         <div className="left-area">
           <ValidationCellStatus isValid={isValid} />
-          <div className="label">{props.label}</div>
+          <div className="label">Device Orientations</div>
         </div>
         <div className={`cta ${props.meta !== null ? `has-data` : `no-data`}`} onClick={openModal}>Touch here</div>
       </div>
