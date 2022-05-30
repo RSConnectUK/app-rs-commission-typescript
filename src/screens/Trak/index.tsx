@@ -10,6 +10,7 @@ import ComResults from '../../components/others/CommissioningResults';
 import { createAmplitudeEvent, logError, makeConnectedAPIRequest, showAlert } from '../../utils/helpers';
 import moment from 'moment';
 import DeviceOrientations from '../../components/others/DeviceOrientations';
+import ValidationCellStatus from '../../components/others/ValidationCellStatus';
 
 const ExportingComponent = (props: any) => {
   // eslint-disable-next-line
@@ -175,36 +176,35 @@ const ExportingComponent = (props: any) => {
   }
 
   return <React.Fragment>
-  
     <ScreenContainer>
         <IonList>
           <IonItem>
             <IonLabel position="floating">Voucher</IonLabel>
-            <IonInput id="voucher" value={jobData.voucher} onIonChange={onInputChange}></IonInput>
+            <IonInput id="voucher" type="text" value={jobData.voucher} onIonChange={onInputChange}></IonInput>
           </IonItem>
           <IonItem>
             <IonLabel position="floating">SIM Number</IonLabel>
-            <IonInput id="sim" value={jobData.sim} onIonChange={onInputChange}></IonInput>
+            <IonInput id="sim" type="text" value={jobData.sim} onIonChange={onInputChange}></IonInput>
           </IonItem>
           <IonItem>
             <IonLabel position="floating">Car Reg</IonLabel>
-            <IonInput id="car_reg" value={jobData.car_reg} onIonChange={onInputChange}></IonInput>
+            <IonInput id="car_reg" type="text" value={jobData.car_reg} onIonChange={onInputChange}></IonInput>
           </IonItem>
           <IonItem>
             <IonLabel position="floating">Make</IonLabel>
-            <IonInput id="car_make" value={jobData.car_make} onIonChange={onInputChange}></IonInput>
+            <IonInput id="car_make" type="text" value={jobData.car_make} onIonChange={onInputChange}></IonInput>
           </IonItem>
           <IonItem>
             <IonLabel position="floating">Model</IonLabel>
-            <IonInput id="car_model" value={jobData.car_model} onIonChange={onInputChange}></IonInput>
+            <IonInput id="car_model" type="text" value={jobData.car_model} onIonChange={onInputChange}></IonInput>
           </IonItem>
           <IonItem>
             <IonLabel position="floating">VIN</IonLabel>
-            <IonInput id="vin" value={jobData.vin} onIonChange={onInputChange}></IonInput>
+            <IonInput id="vin" type="text" value={jobData.vin} onIonChange={onInputChange}></IonInput>
           </IonItem>
           <IonItem>
             <IonLabel position="floating">Car Mileage</IonLabel>
-            <IonInput id="car_mileage" value={jobData.car_mileage} onIonChange={onInputChange}></IonInput>
+            <IonInput id="car_mileage" type="number" value={jobData.car_mileage} onIonChange={onInputChange}></IonInput>
           </IonItem>
           <IonItem>
             <IonLabel position="floating">Colour</IonLabel>
@@ -225,7 +225,7 @@ const ExportingComponent = (props: any) => {
             </IonSelect>
           </IonItem>
           <IonItem>
-            <DeviceOrientations/>
+            <DeviceOrientations test={null}/>
           </IonItem>
           <IonButton expand='block' onClick={() => setOpened(true)}>Commission</IonButton>
         </IonList>

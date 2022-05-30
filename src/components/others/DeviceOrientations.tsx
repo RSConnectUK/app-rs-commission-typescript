@@ -143,13 +143,13 @@ const Component = (props: any) => {
   }
 
   return <React.Fragment>
-    <div className="component-layout component-device-orientations">
+    <div className="component-device-orientations">
       <div className="container">
         <div className="left-area">
           <ValidationCellStatus isValid={isValid} />
           <div className="label">Device Orientations</div>
         </div>
-        <div className={`cta ${props.meta !== null ? `has-data` : `no-data`}`} onClick={openModal}>Touch here</div>
+        <div className={`cta has-data`} onClick={openModal}>Touch here</div>
       </div>
     </div>
     {
@@ -192,7 +192,6 @@ const Component = (props: any) => {
               {
                 (orientations['car'] !== null && orientations['box'] !== null) && <IonButton disabled={!(orientations['car'] !== null && orientations['box'] !== null)} onClick={generateFinalOutput} style={{ 'width': '100%', marginTop: 8 }}>Save this orientation</IonButton>
               }
-
             </React.Fragment> : <React.Fragment>
               <div className="status">Current Motion Information</div>
               <div style={{ width: '100%' }}>

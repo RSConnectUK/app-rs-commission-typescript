@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import AppContainer from '../../../components/layout/container';
 import { IonLoading } from '@ionic/react';
 import { menu} from 'ionicons/icons';
-import { IonGrid, IonRow, IonCol, IonIcon, IonButtons, IonButton, IonRefresher, IonRefresherContent } from '@ionic/react';
+import { IonGrid, IonRow, IonCol, IonIcon, IonButtons, IonButton } from '@ionic/react';
 
 import Menu from '../Components/Menu';
 import { createAmplitudeEvent } from '../../../utils/helpers';
@@ -27,9 +27,6 @@ const HomepageScreenContainer = (props: any) => {
   }
 
   return <AppContainer screen="homepage" headerProps={headerProps}>
-    <IonRefresher slot="fixed">
-      <IonRefresherContent></IonRefresherContent>
-    </IonRefresher>
     <IonGrid>
       <IonRow className="ion-justify-content-center">
         <IonCol size="12">

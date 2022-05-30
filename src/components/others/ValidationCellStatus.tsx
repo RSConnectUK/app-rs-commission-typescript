@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { IonIcon } from '@ionic/react';
 import { checkmarkCircleOutline, closeCircleOutline } from 'ionicons/icons';

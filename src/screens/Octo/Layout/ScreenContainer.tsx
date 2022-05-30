@@ -1,7 +1,7 @@
 import React from 'react';
 import AppContainer from '../../../components/layout/container';
 import { IonLoading, isPlatform } from '@ionic/react';
-import { IonGrid, IonRow, IonCol, IonIcon, IonButtons, IonButton, IonRefresher, IonRefresherContent } from '@ionic/react';
+import { IonGrid, IonRow, IonCol, IonIcon, IonButtons, IonButton } from '@ionic/react';
 import { arrowBackOutline, chevronBack } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
 
@@ -21,10 +21,7 @@ const OctoScreenContainer = (props: any) => {
     </React.Fragment>
   }
 
-  return <AppContainer screen="homepage" headerProps={headerProps}>
-    <IonRefresher slot="fixed">
-      <IonRefresherContent></IonRefresherContent>
-    </IonRefresher>
+  return <AppContainer screen="form" headerProps={headerProps}>
     <IonGrid>
       <IonRow className="ion-justify-content-center">
         <IonCol size="12">
