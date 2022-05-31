@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ValidationCellStatus from './ValidationCellStatus';
 import ScreenModal from './ScreenModal';
-import { IonButton } from '@ionic/react';
+import { IonButton, IonItem, IonLabel } from '@ionic/react';
 import { showAlert, createAmplitudeEvent, logError } from '../../utils/helpers';
 
 const OrientationsReadings = (props: any) => {
@@ -112,20 +112,21 @@ const Component = (props: any) => {
     // console.log('Final orientations output', final_output);
 
     props.setMeta(props.identifier, final_output);
+    let updatedForm = { ...props.data }
+    updatedForm['alpha'] = final_output.alpha;
+    updatedForm['beta'] = final_output.beta;
+    updatedForm['gamma'] = final_output.gamma;
+    props.setMeta({ ...updatedForm })
     closeModal();
 
   }
 
   return <React.Fragment>
-    <div className="component-device-orientations">
-      <div className="container">
-        <div className="left-area">
-          <ValidationCellStatus isValid={isValid} />
-          <div className="label">Device Orientations</div>
-        </div>
-        <div className={`cta no-data`} onClick={openModal}>Touch here</div>
-      </div>
-    </div>
+    <IonButton expand='block' onClick={openModal}>Get Orientations</IonButton>
+    <IonItem>
+      <IonLabel>Device Orientations</IonLabel>
+      <IonLabel>{JSON.stringify(props.meta)}</IonLabel>
+    </IonItem>
     {
       opened === true && <ScreenModal title={`Device Orientation`} onClose={closeModal} className="commission-modal orientations-modal">
         <div className="box">

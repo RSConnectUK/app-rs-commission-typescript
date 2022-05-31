@@ -11,6 +11,7 @@ import { createAmplitudeEvent, logError, makeConnectedAPIRequest, showAlert } fr
 import moment from 'moment';
 import DeviceOrientations from '../../components/others/DeviceOrientations';
 import ValidationCellStatus from '../../components/others/ValidationCellStatus';
+import { getAllByPlaceholderText } from '@testing-library/react';
 
 const ExportingComponent = (props: any) => {
   // eslint-disable-next-line
@@ -240,11 +241,7 @@ const ExportingComponent = (props: any) => {
               }
             </IonSelect>
           </IonItem>
-          <IonItem>
-            <div className="component-layout component-cta">
-              <DeviceOrientations meta={jobData}/>
-            </div>
-          </IonItem>
+          <DeviceOrientations data={jobData} meta={{alpha: jobData.alpha, beta: jobData.beta, gamma: jobData.gamma}} setMeta={setJobData}/>
           <IonButton expand='block' onClick={() => setOpened(true)}>Commission</IonButton>
         </IonList>
     </ScreenContainer>
