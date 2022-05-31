@@ -227,6 +227,28 @@ html, *, body {
 
 }
 
+.validation-status {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  margin-right: 6px;
+
+  ion-icon {
+    font-size: 24px;
+    color: #07B937;
+    margin-right: 6px;
+  }
+
+  &.not-valid {
+    ion-icon {
+      color: grey;
+      @media (prefers-color-scheme: dark) {
+        color: rgba(2555,255,255, 0.5);
+      }
+    }
+  }
+}
+
 .screen-form {
 
   .order-information {
@@ -424,6 +446,45 @@ html, *, body {
       border: solid 1px #D3DAE6;
       @media (prefers-color-scheme: dark) {
         border-color: #2d2d2d;
+      }
+    }
+  }
+
+  .component-device-orientations {
+  
+    .container {
+      align-items: center;
+      padding-top: 8px !important;
+      padding-bottom: 8px !important;
+    }
+  
+    .left-area {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      .label {
+        max-width: unset;
+      }
+    }
+  
+    .cta {
+      font-size: 16px;
+      padding-right: 8px;
+      color: rgba(0,0,0, 0.5);
+      @media (prefers-color-scheme: dark) {
+        color: rgba(255,255,255,0.5);
+      }
+      min-height: 40px;
+      flex: 1;
+      display: flex;
+      text-align: right;
+      justify-content: flex-end;
+      align-items: center;
+      &.has-data {
+        color: rgb(0,0,0,);
+        @media (prefers-color-scheme: dark) {
+          color: #fff;
+        }
       }
     }
   }

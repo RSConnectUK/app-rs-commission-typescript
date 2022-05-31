@@ -175,6 +175,21 @@ const ExportingComponent = (props: any) => {
 
   }
 
+  const GetVIN = async () => {
+    try {
+      const searchString = jobData.car_reg;
+      const data = await makeConnectedAPIRequest(`/getvin/${searchString}`)
+      let updatedForm = { ...jobData }
+      updatedForm['vin'] = data;
+      setJobData({...updatedForm});
+      showAlert({header: `VIN lookup success`, message: `The VIN was found`})
+    } catch (err) {
+      logError(`FIND_VIN`, err);
+      createAmplitudeEvent(`Having Difficulties`, {reason: `Failed to find a vin number`, failed_info: err})
+      showAlert({header: `VIN lookup failed`, message: `The reg number was not found`})
+    }
+  }
+
   return <React.Fragment>
     <ScreenContainer>
         <IonList>
@@ -198,6 +213,7 @@ const ExportingComponent = (props: any) => {
             <IonLabel position="floating">Model</IonLabel>
             <IonInput id="car_model" type="text" value={jobData.car_model} onIonChange={onInputChange}></IonInput>
           </IonItem>
+          <IonButton expand='block' onClick={GetVIN}>Get VIN</IonButton>
           <IonItem>
             <IonLabel position="floating">VIN</IonLabel>
             <IonInput id="vin" type="text" value={jobData.vin} onIonChange={onInputChange}></IonInput>
@@ -225,7 +241,9 @@ const ExportingComponent = (props: any) => {
             </IonSelect>
           </IonItem>
           <IonItem>
-            <DeviceOrientations test={null}/>
+            <div className="component-layout component-cta">
+              <DeviceOrientations meta={jobData}/>
+            </div>
           </IonItem>
           <IonButton expand='block' onClick={() => setOpened(true)}>Commission</IonButton>
         </IonList>

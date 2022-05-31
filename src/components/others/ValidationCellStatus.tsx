@@ -1,13 +1,14 @@
+
 import React from 'react';
 import { IonIcon } from '@ionic/react';
 import { checkmarkCircleOutline, closeCircleOutline } from 'ionicons/icons';
 
 const ValidIcon = () => <React.Fragment>
-  <IonIcon icon={checkmarkCircleOutline} />
+  <IonIcon style={{color:"green"}} icon={checkmarkCircleOutline} />
 </React.Fragment>
 
 const InvalidIcon = () => <React.Fragment>
-  <IonIcon icon={closeCircleOutline} />
+  <IonIcon style={{color:"grey"}} icon={closeCircleOutline} />
 </React.Fragment>
 
 const ExportingComponent = (props: any) => {

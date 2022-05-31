@@ -36,28 +36,10 @@ const OrientationsReadings = (props: any) => {
 }
 
 const Component = (props: any) => {
-  const [isValid, setIsValid] = useState(true);
+  const [isValid, setIsValid] = useState(false);
   const [opened, setOpened] = useState(false);
   const [orientations, setOrientations] = useState<any>({ box: null, car: null });
   const [motion, setMotion] = useState<any>({ x: 0, y: 0, z: 0 });
-
-  useEffect(() => {
-    if (props.meta === null && props.defaultValue !== undefined) {
-      props.setMeta(props.identifier, props.defaultValue)
-    }
-    if (props.validationMethod !== undefined) validateComponent(props.meta);
-    return () => {
-      if(props.updateValidation) props.updateValidation(props.identifier, true);
-    }
-    // eslint-disable-next-line
-  }, []);
-
-  const validateComponent = (value: any | null) => {
-    if (props.validationMethod === undefined) return false;
-    const isValid = props.validationMethod(value !== undefined ? value : props.meta);
-    props.updateValidation(props.identifier, isValid);
-    setIsValid(isValid);
-  }
 
   const openModal = () => {
     if ((DeviceMotionEvent as any) !== undefined && (DeviceMotionEvent as any).requestPermission !== undefined) { // Safari Support
@@ -130,16 +112,8 @@ const Component = (props: any) => {
     // console.log('Final orientations output', final_output);
 
     props.setMeta(props.identifier, final_output);
-    validateComponent(final_output)
     closeModal();
 
-  }
-
-  const resetData = () => {
-    setMotion({ x: 0, y: 0, z: 0 })
-    setOrientations({ car: null, box: null });
-    props.setMeta(props.identifier, null);
-    validateComponent(null);
   }
 
   return <React.Fragment>
@@ -149,14 +123,14 @@ const Component = (props: any) => {
           <ValidationCellStatus isValid={isValid} />
           <div className="label">Device Orientations</div>
         </div>
-        <div className={`cta has-data`} onClick={openModal}>Touch here</div>
+        <div className={`cta no-data`} onClick={openModal}>Touch here</div>
       </div>
     </div>
     {
       opened === true && <ScreenModal title={`Device Orientation`} onClose={closeModal} className="commission-modal orientations-modal">
         <div className="box">
           {
-            props.meta === null ? <React.Fragment>
+            <React.Fragment>
               <div className="status">Raw Data</div>
               <OrientationsReadings
                 motion={motion}
@@ -170,7 +144,7 @@ const Component = (props: any) => {
                 disabled={orientations['car'] !== null}
                 onClick={() => setMotionAs('car')}>
                 {
-                  orientations[`car`] === null ? `Mark as car` : `Car orientation set`
+                  orientations[`car`] === null ? `Mark as car` : `Car orientation set - ${JSON.stringify(orientations[`car`])}`
                 }
               </IonButton>
               <IonButton
@@ -179,7 +153,7 @@ const Component = (props: any) => {
                 disabled={orientations[`box`] !== null}
                 onClick={() => setMotionAs('box')}>
                 {
-                  orientations[`box`] === null ? `Mark as box` : `Box orientation set`
+                  orientations[`box`] === null ? `Mark as box` : `Box orientation set - ${JSON.stringify(orientations[`box`])}`
                 }
               </IonButton>
 
@@ -192,13 +166,6 @@ const Component = (props: any) => {
               {
                 (orientations['car'] !== null && orientations['box'] !== null) && <IonButton disabled={!(orientations['car'] !== null && orientations['box'] !== null)} onClick={generateFinalOutput} style={{ 'width': '100%', marginTop: 8 }}>Save this orientation</IonButton>
               }
-            </React.Fragment> : <React.Fragment>
-              <div className="status">Current Motion Information</div>
-              <div style={{ width: '100%' }}>
-                <span style={{ wordBreak: 'break-all', textAlign: 'center', width: '100%', display: 'block', fontSize: 16 }}>{JSON.stringify(props.meta)}</span>
-              </div>
-              <hr className="divider-hr" />
-              <IonButton fill="outline" onClick={resetData} style={{ 'width': '100%' }}>Retake orientation</IonButton>
             </React.Fragment>
           }
         </div>
