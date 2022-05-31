@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import ValidationCellStatus from './ValidationCellStatus';
 import ScreenModal from './ScreenModal';
 import { IonButton, IonItem, IonLabel } from '@ionic/react';
 import { showAlert, createAmplitudeEvent, logError } from '../../utils/helpers';
@@ -36,7 +35,6 @@ const OrientationsReadings = (props: any) => {
 }
 
 const Component = (props: any) => {
-  const [isValid, setIsValid] = useState(false);
   const [opened, setOpened] = useState(false);
   const [orientations, setOrientations] = useState<any>({ box: null, car: null });
   const [motion, setMotion] = useState<any>({ x: 0, y: 0, z: 0 });
@@ -124,8 +122,7 @@ const Component = (props: any) => {
   return <React.Fragment>
     <IonButton expand='block' onClick={openModal}>Get Orientations</IonButton>
     <IonItem>
-      <IonLabel>Device Orientations</IonLabel>
-      <IonLabel>{JSON.stringify(props.meta)}</IonLabel>
+      <IonLabel>Device Orientations: {JSON.stringify(props.meta)}</IonLabel>
     </IonItem>
     {
       opened === true && <ScreenModal title={`Device Orientation`} onClose={closeModal} className="commission-modal orientations-modal">
@@ -145,7 +142,7 @@ const Component = (props: any) => {
                 disabled={orientations['car'] !== null}
                 onClick={() => setMotionAs('car')}>
                 {
-                  orientations[`car`] === null ? `Mark as car` : `Car orientation set - ${JSON.stringify(orientations[`car`])}`
+                  orientations[`car`] === null ? `Mark as car` : `Car orientation set`
                 }
               </IonButton>
               <IonButton
@@ -154,7 +151,7 @@ const Component = (props: any) => {
                 disabled={orientations[`box`] !== null}
                 onClick={() => setMotionAs('box')}>
                 {
-                  orientations[`box`] === null ? `Mark as box` : `Box orientation set - ${JSON.stringify(orientations[`box`])}`
+                  orientations[`box`] === null ? `Mark as box` : `Box orientation set`
                 }
               </IonButton>
 

@@ -10,8 +10,6 @@ import ComResults from '../../components/others/CommissioningResults';
 import { createAmplitudeEvent, logError, makeConnectedAPIRequest, showAlert } from '../../utils/helpers';
 import moment from 'moment';
 import DeviceOrientations from '../../components/others/DeviceOrientations';
-import ValidationCellStatus from '../../components/others/ValidationCellStatus';
-import { getAllByPlaceholderText } from '@testing-library/react';
 
 const ExportingComponent = (props: any) => {
   // eslint-disable-next-line
@@ -177,6 +175,7 @@ const ExportingComponent = (props: any) => {
   }
 
   const GetVIN = async () => {
+    setSubmitted(true);
     try {
       const searchString = jobData.car_reg;
       const data = await makeConnectedAPIRequest(`/getvin/${searchString}`)
@@ -189,6 +188,7 @@ const ExportingComponent = (props: any) => {
       createAmplitudeEvent(`Having Difficulties`, {reason: `Failed to find a vin number`, failed_info: err})
       showAlert({header: `VIN lookup failed`, message: `The reg number was not found`})
     }
+    setSubmitted(false);
   }
 
   return <React.Fragment>
@@ -214,7 +214,7 @@ const ExportingComponent = (props: any) => {
             <IonLabel position="floating">Model</IonLabel>
             <IonInput id="car_model" type="text" value={jobData.car_model} onIonChange={onInputChange}></IonInput>
           </IonItem>
-          <IonButton expand='block' onClick={GetVIN}>Get VIN</IonButton>
+          <IonButton expand='block' disabled={submitted} onClick={GetVIN}>Get VIN</IonButton>
           <IonItem>
             <IonLabel position="floating">VIN</IonLabel>
             <IonInput id="vin" type="text" value={jobData.vin} onIonChange={onInputChange}></IonInput>
@@ -261,7 +261,6 @@ const ExportingComponent = (props: any) => {
             <span>You should be as close to the box as is possible.</span>
           </div>
         </div>
-
       </ScreenModal>
     }
   </React.Fragment>
