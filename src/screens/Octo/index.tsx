@@ -130,7 +130,6 @@ const ExportingComponent = (props: any) => {
   }
 
   return <React.Fragment>
-  
     <ScreenContainer>
         <IonList>
           <IonItem>
@@ -172,7 +171,6 @@ const ExportingComponent = (props: any) => {
             <span>You should be as close to the box as is possible.</span>
           </div>
         </div>
-
       </ScreenModal>
     }
   </React.Fragment>

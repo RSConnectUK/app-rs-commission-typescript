@@ -4,6 +4,7 @@ import { IonGrid, IonRow, IonCol } from '@ionic/react';
 import { createAmplitudeEvent, logError, showAlert, makeConnectedAPIRequest } from '../../utils/helpers';
 import { AppState } from '../../utils/state';
 import FormsComponent from './Components/Forms';
+import { withRouter } from 'react-router-dom';
 
 const AuthComponent = (props: any) => {
   const [form, setForm] = useState({ username: null, password: null });
@@ -79,4 +80,4 @@ const AuthComponent = (props: any) => {
   </AppContainer>
 }
 
-export default AuthComponent;
+export default withRouter(AuthComponent);
