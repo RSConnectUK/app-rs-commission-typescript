@@ -155,9 +155,14 @@ const ExportingComponent = (props: any) => {
     setJobData({ ...updatedForm })
   }
 
+  const screenProps = {  
+    jobData,
+    updateJobData : (data: any) => setJobData(data)
+  }
+
   return <React.Fragment>
   
-    <ScreenContainer>
+    <ScreenContainer {...screenProps}>
         <IonList>
           <IonItem>
             <IonLabel position="floating">Voucher</IonLabel>
