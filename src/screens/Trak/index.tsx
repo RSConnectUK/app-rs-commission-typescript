@@ -19,7 +19,7 @@ const ExportingComponent = (props: any) => {
   const [activationDate, SetActivationDate] = useState<string>();
   const [jobData, setJobData] = useState<any>({ voucher: null, sim: null, car_reg: null, colour: null, car_make: null, car_model: null, vin: null, car_mileage: null, install_index: null, alpha: null, beta: null, gamma: null });
   const [extraDetails, setExtraDetails] = useState<any>([]);
-
+  const assoc = `TRAK`;
   const { account } = AppState();
   const install_locations = [`Dash, Passenger Side`, `Dash, Centre`, `Dash, Driver Side`, `Centre Console Front`, `Centre Console Rear`, `Boot, Passenger Side`, `Boot, Centre`, `Boot, Driver Side`, `Engine Bay`];
 
@@ -100,17 +100,19 @@ const ExportingComponent = (props: any) => {
 
     setSubmitted(true);
 
+    let ampBody = { association: assoc, voucher: bodyRequest.voucher_num, sim: bodyRequest.sim_number, car_reg: bodyRequest.car_reg, vin: bodyRequest.vin, requestBody: bodyRequest }
+
     try {
-      createAmplitudeEvent(`Tapped Activate Device`)
+      createAmplitudeEvent(`Tapped Activate Device`,{...ampBody});
       const data = await makeConnectedAPIRequest(`trak/associate`, `POST`, bodyRequest);
       logError(`TRAK_ACTIVATION_SUCCESS`, {}, { response_received: data, body_sent: bodyRequest })
       SetActivationStatus("Success")
       SetActivationDate(moment(new Date()).format(`HH:mm:ss`));
       setExtraDetails(data.message ? [{ text: `Message`, value: data.message }] : []);
-      createAmplitudeEvent(`Device activated`);
+      createAmplitudeEvent(`Device activated`,{...ampBody});
     } catch (err: any) {
       logError(`TRAK_ACTIVATION_FAILURE`, err, bodyRequest)
-      createAmplitudeEvent(`Having Difficulties`, { reason: `Failed to activate device`, failed_info: err })
+      createAmplitudeEvent(`Having Difficulties`, { ...ampBody, reason: `Failed to activate device`, failed_info: err })
       SetActivationStatus("Failure")
       SetActivationDate(moment(new Date()).format(`HH:mm:ss`));
       if (err.response && err.response.data && err.response.data.title !== undefined) {
@@ -128,21 +130,21 @@ const ExportingComponent = (props: any) => {
   }
 
   const checkBox = async () => {
-    setSubmitted(true);
-    try {
-      const bodyRequest = {
-        voucher_num: jobData.voucher,
-        sim_number: jobData.sim,
-        vin: jobData.vin
-      }
-      createAmplitudeEvent(`Tapped Check Box`)
+    const bodyRequest = {
+      voucher_num: jobData.voucher,
+      sim_number: jobData.sim,
+      vin: jobData.vin
+    }
+    let ampBody = {association: assoc, voucher: bodyRequest.voucher_num, sim: bodyRequest.sim_number, vin: bodyRequest.vin}
+    setSubmitted(true);    try {
+      createAmplitudeEvent(`Tapped Check Box`,{...ampBody});
       const data = await makeConnectedAPIRequest(`trak/check_sim`, `POST`, bodyRequest);
       logError(`CHECK_BOX_TRAK_SUCCESS`, {}, { response_received: data, body_sent: bodyRequest })
-      createAmplitudeEvent(`Check Successful`)
+      createAmplitudeEvent(`Check Successful`,{...ampBody})
       getDetailsUpdated(data);
     } catch (err) {
       logError(`CHECK_BOX_TRAK_ERROR`, err);
-      createAmplitudeEvent(`Having Difficulties`, { reason: `Failed to check box`, failed_info:err });
+      createAmplitudeEvent(`Having Difficulties`, {...ampBody, reason: `Failed to check box`, failed_info: err});
       showAlert({
         header: `Failure`,
         message: `Failed to check box due to an unknown server error. Please try again or contact our support team.`
@@ -185,7 +187,7 @@ const ExportingComponent = (props: any) => {
       showAlert({header: `VIN lookup success`, message: `The VIN was found`})
     } catch (err) {
       logError(`FIND_VIN`, err);
-      createAmplitudeEvent(`Having Difficulties`, {reason: `Failed to find a vin number`, failed_info: err})
+      createAmplitudeEvent(`Having Difficulties`, {associaton: assoc,reason: `Failed to find a vin number`, car_reg: jobData.car_reg, failed_info: err})
       showAlert({header: `VIN lookup failed`, message: `The reg number was not found`})
     }
     setSubmitted(false);
