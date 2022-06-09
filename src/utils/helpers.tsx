@@ -170,6 +170,18 @@ export const makeConnectedAPIRequest = async (path: string, method: any = 'GET',
   }
 }
 
+export const getAssociated = async (assoc: string) => {
+  const account = await getLocalAccount();
+  const data: any = await makeConnectedAPIRequest(`${account.engineer_id}/getJobs`, `GET`);
+  let res: any = [];
+  const d = new Date();
+  const dateString = ('0' + d.getDate()).slice(-2) + '/'
+             + ('0' + (d.getMonth()+1)).slice(-2) + '/'
+             + d.getFullYear();
+  Object.entries(data).filter((job: any) => job[1].contractDetails.association === assoc && job[1].job_date === dateString).map((job: any) => res.push(job[1]));
+  return res; 
+}
+
 export const getUserLocation = async () => {
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition((successData: any) => {
