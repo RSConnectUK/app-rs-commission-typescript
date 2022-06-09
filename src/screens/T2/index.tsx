@@ -19,7 +19,7 @@ const ExportingComponent = (props: any) => {
   const [activationDate, SetActivationDate] = useState<string>();
   const [jobData, setJobData] = useState<any>({ voucher: null, imei: null, serial: null, reg: null, position: null });
   const [extraDetails, setExtraDetails] = useState<any>([]);
-
+  const assoc = `T2`;
   const install_locations = [`Dash, Passenger Side`, `Dash, Centre`, `Dash, Driver Side`, `Centre Console Front`, `Centre Console Rear`, `Boot, Passenger Side`, `Boot, Centre`, `Boot, Driver Side`, `Engine Bay`];
 
   const closeModal = () => {
@@ -58,8 +58,8 @@ const ExportingComponent = (props: any) => {
       }
     } catch (err: any) {
       showAlert({ header: `Permission denied`, message: err.toString()});
-      //logError(`GET_USER_LOCATION`, err)
-      //createAmplitudeEvent(`Having Difficulties`, { reason: `The user refused to give us permission to his device location.`, failed_info: err })
+      logError(`GET_USER_LOCATION`, err)
+      createAmplitudeEvent(`Having Difficulties`, { reason: `The user refused to give us permission to his device location.`, failed_info: err })
       return false;
     }
 
@@ -74,8 +74,10 @@ const ExportingComponent = (props: any) => {
 
     setSubmitted(true);
 
+    let ampBody = {association: assoc, voucher: bodyRequest.voucher, imei: bodyRequest.imei, serial: bodyRequest.serial, car_reg: bodyRequest.reg, requestBody: bodyRequest};
+
     try {
-      createAmplitudeEvent(`Tapped Activate Device`)
+      createAmplitudeEvent(`Tapped Activate Device`,{...ampBody});
       const { data } = await Axios(`https://6chkcoll6c.execute-api.eu-west-2.amazonaws.com/live/commission/ttwo`, {
         method: `POST`,
         headers: {
@@ -87,10 +89,10 @@ const ExportingComponent = (props: any) => {
       SetActivationStatus("Success")
       SetActivationDate(moment(new Date()).format(`HH:mm:ss`));
       setExtraDetails(data.message ? [{ text: `Message`, value: data.message }] : []);
-      createAmplitudeEvent(`Device activated`);
+      createAmplitudeEvent(`Device activated`,{...ampBody});
     } catch (err: any) {
       logError(`T2_ACTIVATION_FAILURE`, err, bodyRequest)
-      createAmplitudeEvent(`Having Difficulties`, { reason: `Failed to activate device`, failed_info: err })
+      createAmplitudeEvent(`Having Difficulties`, {...ampBody, reason: `Failed to activate device`, failed_info: err })
       SetActivationStatus("Failure")
       SetActivationDate(moment(new Date()).format(`HH:mm:ss`));
       if (err.response && err.response.data && err.response.data.title !== undefined) {

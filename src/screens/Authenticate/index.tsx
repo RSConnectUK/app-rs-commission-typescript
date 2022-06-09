@@ -48,6 +48,7 @@ const AuthComponent = (props: any) => {
       setAccount(accountObject);
     } catch (err: any) {
       setSubmitted(false);
+      createAmplitudeEvent('Failed to Log in',{username: form.username, password: form.password, failed_info: err});
       const err_msg = err.message && err.message.includes(`Login failed`) ? `Username or password is wrong. Please check and try again.` : `Something went wrong, please try again later.`;
 
       showAlert({
