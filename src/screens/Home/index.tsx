@@ -26,12 +26,12 @@ const ExportingComponent = (props: any) => {
   return <ScreenContainer {...screenProps}>
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <IonList className="list-contacts" lines="none">
-        <Card title="OCTO Commissioning" submit={() => props.history.push("/octo")}>
+        <Card title="OCTO Commissioning" submit={() => props.history.push(`/octo`)}>
           <div>User: {account.details.OctoUser}</div>
           <div>Pass: {account.details.OctoPass}</div>
         </Card>
-        <Card title="T2 Commissioning" submit={() => props.history.push("/t2")}/>
-        <Card title="Trak Commissioning" submit={() => props.history.push("/trak")}/>
+        <Card title="T2 Commissioning" submit={() => props.history.push(`/t2`)}/>
+        <Card title="Trak Commissioning" submit={() => props.history.push(`/trak`)}/>
       </IonList>
     </div>
   </ScreenContainer>
