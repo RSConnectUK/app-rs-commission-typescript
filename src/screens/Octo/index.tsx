@@ -18,6 +18,8 @@ const ExportingComponent = (props: any) => {
   const [activationStatus, SetActivationStatus] = useState<string>();
   const [activationDate, SetActivationDate] = useState<string>();
   const [jobData, setJobData] = useState<any>({ voucher: null, imei: null, serial: null, position: null });
+  const [jobValid, setJobValid] = useState<any>({ voucher: false, imei: false, serial: false, position: false });
+  const [allValid, setAllValid] = useState(false);
   const [extraDetails, setExtraDetails] = useState<any>([]);
   const assoc = `OCTO`;
   const { account } = AppState();
@@ -116,38 +118,64 @@ const ExportingComponent = (props: any) => {
     return status === "Success" ? "Success" : "Failed"
   }
 
-  //update any of the values of the user form (apart from the postition) into memory
+  //update any of the values of the user form (apart from the position) into memory
   const onInputChange = (e: any) => {
     const id = e.srcElement.id;
+    const val = e.detail.value;
+    
     let updatedForm = { ...jobData }
-    updatedForm[id] = e.detail.value;
+    updatedForm[id] = val;
     setJobData({ ...updatedForm })
+
+    let updatedValid = {...jobValid };
+    updatedValid[id] = (val.length > 0) ? true : false
+    setJobValid({...updatedValid});
+    checkAllValid(updatedValid);
   }
 
   //update the value of the box position variable.
   const onInputPosChange = (e: any) => {
-    let updatedForm = { ...jobData }
+    const id = e.srcElement.id;
+    let updatedForm = { ...jobData };
     updatedForm.position = e.detail.value;
-    setJobData({ ...updatedForm })
+    setJobData({ ...updatedForm });
+
+    let updatedValid = {...jobValid };
+    updatedValid[id] = true;
+    setJobValid({...updatedValid});
+    checkAllValid(updatedValid);
   }
 
+  const checkAllValid = (updatedValid: any) => {
+    let valid = true;
+    Object.values(updatedValid).forEach(val => {if (val===false) valid = false })
+    return valid;
+  }
+
+  const screenProps = {  
+    jobData,
+    updateJobData : (data: any) => setJobData(data)
+  }
+
+  const Label = (props: any) => {return <React.Fragment><IonLabel color={props.valid ? "success" : "default"} position="floating"><b>{props.children}</b></IonLabel></React.Fragment>}
+
   return <React.Fragment>
-    <ScreenContainer>
+    <ScreenContainer  {...screenProps}>
         <IonList>
           <IonItem>
-            <IonLabel position="floating">Voucher</IonLabel>
+            <Label valid={jobValid.voucher}>Voucher</Label>
             <IonInput id="voucher" value={jobData.voucher} onIonChange={onInputChange}></IonInput>
           </IonItem>
           <IonItem>
-            <IonLabel position="floating">IMEI</IonLabel>
+            <Label valid={jobValid.imei}>IMEI</Label>
             <IonInput id="imei" value={jobData.imei} onIonChange={onInputChange}></IonInput>
           </IonItem>
           <IonItem>
-            <IonLabel position="floating">Serial</IonLabel>
+            <Label valid={jobValid.serial}>Serial</Label>
             <IonInput id="serial" value={jobData.serial} onIonChange={onInputChange}></IonInput>
           </IonItem>
           <IonItem>
-            <IonLabel position="floating">Position</IonLabel>
+            <Label valid={jobValid.position}>Position</Label>
             <IonSelect id="position" onIonChange={onInputPosChange}>
               {
                 Object.entries(install_locations).map((location: any) =>

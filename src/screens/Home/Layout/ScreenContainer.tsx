@@ -6,12 +6,13 @@ import { IonGrid, IonRow, IonCol, IonIcon, IonButtons, IonButton } from '@ionic/
 
 import Menu from '../Components/Menu';
 import { createAmplitudeEvent } from '../../../utils/helpers';
+import PackageJson from '../../../../package.json';
 
 const HomepageScreenContainer = (props: any) => {
   const [menuToggled, setMenuToggled] = useState(false);
 
   const headerProps = {
-    title: 'Home Menu',
+    title: 'RS Commission - '+PackageJson.version,
     content: <React.Fragment>
       <IonButtons slot="start">
         <IonButton style={{ height: 44, width: 44 }} onClick={() => {
