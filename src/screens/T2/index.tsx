@@ -74,7 +74,7 @@ const ExportingComponent = (props: any) => {
 
     setSubmitted(true);
 
-    let ampBody = {association: assoc, voucher: bodyRequest.voucher, imei: bodyRequest.imei, serial: bodyRequest.serial, car_reg: bodyRequest.reg, requestBody: bodyRequest};
+    let ampBody = {association: assoc, voucher: bodyRequest.voucher, imei: bodyRequest.imei, serial: bodyRequest.serial, car_reg: bodyRequest.reg, requestBody: {...bodyRequest}};
 
     try {
       createAmplitudeEvent(`Tapped Activate Device`,{...ampBody});
