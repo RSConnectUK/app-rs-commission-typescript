@@ -18,25 +18,31 @@ const ExportingComponent = (props: any) => {
   const [activationStatus, SetActivationStatus] = useState<string>();
   const [activationDate, SetActivationDate] = useState<string>();
   const [jobData, setJobData] = useState<any>({ voucher: null, sim: null, car_reg: null, colour: null, car_make: null, car_model: null, vin: null, car_mileage: null, install_index: null, alpha: null, beta: null, gamma: null });
+  const [jobValid, setJobValid] = useState<any>({ voucher: false, sim: false, car_reg: false, colour: false, car_make: false, car_model: false, vin: false, car_mileage: false, install_index: false, orientation: false });
+  const [allValid, setAllValid] = useState(false);
   const [extraDetails, setExtraDetails] = useState<any>([]);
   const assoc = `TRAK`;
   const { account } = AppState();
   const install_locations = [`Dash, Passenger Side`, `Dash, Centre`, `Dash, Driver Side`, `Centre Console Front`, `Centre Console Rear`, `Boot, Passenger Side`, `Boot, Centre`, `Boot, Driver Side`, `Engine Bay`];
 
-  const healthChecks = [
-    {
-      "code": "secured_to_specification",
-      "label": "Unit is secured to specification"
-    },
-    {
-      "code": "leds_illuminated",
-      "label": "LEDs on unit are illuminated"
-    },
-    {
-      "code": "details_double_checked",
-      "label": "Double check SIM, VIN and VRN are correct"
-    }
-  ]
+  const updateJobData = (id: string, val: string) => {
+    let updatedForm = { ...jobData }
+    updatedForm[id] = val;
+    setJobData({ ...updatedForm })
+  }
+
+  const updateJobValid = (id: string, state: boolean) => {
+    let updatedValid = {...jobValid };
+    updatedValid[id] = state;
+    setJobValid({...updatedValid});
+    setAllValid(checkAllValid(updatedValid));
+  }
+
+  const checkAllValid = (updatedValid: any) => {
+    let valid = true;
+    Object.values(updatedValid).forEach(val => {if (val===false) valid = false })
+    return valid;
+  }
 
   const colours = [
     "Aluminium or Silver",
@@ -71,6 +77,18 @@ const ExportingComponent = (props: any) => {
     setExtraDetails(rows);
   }
 
+  const openCommission = () => {
+    if (!allValid) {
+      console.log(jobValid);
+      showAlert({
+        header: 'Check Fields',
+        message: `Please check all the fields before commissioning`
+      });
+      return false;
+    }
+    setOpened(true);
+  }
+
   const submit = async () => {
 
     if (navigator.onLine === false) {
@@ -84,7 +102,7 @@ const ExportingComponent = (props: any) => {
     let bodyRequest = {
       voucher_num: jobData.voucher,
       sim_number: jobData.sim,
-      car_reg: jobData.reg,
+      car_reg: jobData.car_reg,
       colour: jobData.colour,
       car_make: jobData.car_make,
       car_model: jobData.car_model,
@@ -104,6 +122,7 @@ const ExportingComponent = (props: any) => {
 
     try {
       createAmplitudeEvent(`Tapped Activate Device`,{...ampBody});
+      console.log(bodyRequest);
       const data = await makeConnectedAPIRequest(`trak/associate`, `POST`, bodyRequest);
       logError(`TRAK_ACTIVATION_SUCCESS`, {}, { response_received: data, body_sent: bodyRequest })
       SetActivationStatus("Success")
@@ -135,7 +154,7 @@ const ExportingComponent = (props: any) => {
       sim_number: jobData.sim,
       vin: jobData.vin
     }
-    let ampBody = {association: assoc, voucher: bodyRequest.voucher_num, sim: bodyRequest.sim_number, vin: bodyRequest.vin}
+    let ampBody = {association: assoc, voucher: jobData.voucher, sim: jobData.sim, vin: jobData.vin}
     setSubmitted(true);    try {
       createAmplitudeEvent(`Tapped Check Box`,{...ampBody});
       const data = await makeConnectedAPIRequest(`trak/check_sim`, `POST`, bodyRequest);
@@ -160,20 +179,22 @@ const ExportingComponent = (props: any) => {
     return status === "Success" ? "Success" : "Failed"
   }
 
-  //update any of the values of the user form (apart from the postition) into memory
+  //update any of the values of the user form (apart from the postition & colour) into memory
   const onInputChange = (e: any) => {
     const id = e.srcElement.id;
-    let updatedForm = { ...jobData }
-    updatedForm[id] = e.detail.value;
-    setJobData({ ...updatedForm })
+    const val = e.detail.value;
+    
+    updateJobData(id, val);
+    updateJobValid(id,(val.length > 0) ? true : false);
   }
 
   //update the value of the box position variable.
   const onInputPosChange = (e: any) => {
-    let updatedForm = { ...jobData }
-    updatedForm.install_index = install_locations.indexOf(e.detail.value) + 1;
-    setJobData({ ...updatedForm })
+    const id = e.srcElement.id;
+    const val = e.detail.value;
 
+    updateJobData(id, val);
+    updateJobValid(id,true);
   }
 
   const GetVIN = async () => {
@@ -198,41 +219,43 @@ const ExportingComponent = (props: any) => {
     updateJobData : (data: any) => setJobData(data)
   }
 
+  const Label = (props: any) => {return <React.Fragment><IonLabel color={props.valid ? "success" : "default"} position="floating"><b>{props.children}</b></IonLabel></React.Fragment>}
+
   return <React.Fragment>
     <ScreenContainer  {...screenProps}>
         <IonList>
           <IonItem>
-            <IonLabel position="floating">Voucher</IonLabel>
+            <Label valid={jobValid.voucher}>Voucher</Label>
             <IonInput id="voucher" type="text" value={jobData.voucher} onIonChange={onInputChange}></IonInput>
           </IonItem>
           <IonItem>
-            <IonLabel position="floating">SIM Number</IonLabel>
+            <Label valid={jobValid.sim}>SIM Number</Label>
             <IonInput id="sim" type="text" value={jobData.sim} onIonChange={onInputChange}></IonInput>
           </IonItem>
           <IonItem>
-            <IonLabel position="floating">Car Reg</IonLabel>
+            <Label valid={jobValid.car_reg}>Car Reg</Label>
             <IonInput id="car_reg" type="text" value={jobData.car_reg} onIonChange={onInputChange}></IonInput>
           </IonItem>
           <IonItem>
-            <IonLabel position="floating">Make</IonLabel>
+            <Label valid={jobValid.car_make}>Make</Label>
             <IonInput id="car_make" type="text" value={jobData.car_make} onIonChange={onInputChange}></IonInput>
           </IonItem>
           <IonItem>
-            <IonLabel position="floating">Model</IonLabel>
+            <Label valid={jobValid.car_model}>Model</Label>
             <IonInput id="car_model" type="text" value={jobData.car_model} onIonChange={onInputChange}></IonInput>
           </IonItem>
           <IonButton expand='block' disabled={submitted} onClick={GetVIN}>Get VIN</IonButton>
           <IonItem>
-            <IonLabel position="floating">VIN</IonLabel>
+            <Label valid={jobValid.vin}>VIN</Label>
             <IonInput id="vin" type="text" value={jobData.vin} onIonChange={onInputChange}></IonInput>
           </IonItem>
           <IonItem>
-            <IonLabel position="floating">Car Mileage</IonLabel>
+            <Label valid={jobValid.car_mileage}>Car Mileage</Label>
             <IonInput id="car_mileage" type="number" value={jobData.car_mileage} onIonChange={onInputChange}></IonInput>
           </IonItem>
           <IonItem>
-            <IonLabel position="floating">Colour</IonLabel>
-            <IonSelect id="colour" value={jobData.colour} onIonChange={onInputChange}>
+            <Label valid={jobValid.colour}>Colour</Label>
+            <IonSelect interface="action-sheet" id="colour" value={jobData.colour} onIonChange={onInputPosChange}>
               {
                 Object.entries(colours).map((colour: any) =>
                 <IonSelectOption>{colour[1]}</IonSelectOption>)
@@ -240,16 +263,16 @@ const ExportingComponent = (props: any) => {
             </IonSelect>
           </IonItem>
           <IonItem>
-            <IonLabel position="floating">Position</IonLabel>
-            <IonSelect id="position" onIonChange={onInputPosChange}>
+            <Label valid={jobValid.install_index}>Position</Label>
+            <IonSelect interface="action-sheet" id="install_index" onIonChange={onInputPosChange}>
               {
                 Object.entries(install_locations).map((location: any) =>
-                <IonSelectOption>{location[1]}</IonSelectOption>)
+                <IonSelectOption style={{"width":"100px"}} value={parseInt(location[0])+1}>{location[1]}</IonSelectOption>)
               }
             </IonSelect>
           </IonItem>
-          <DeviceOrientations data={jobData} meta={{alpha: jobData.alpha, beta: jobData.beta, gamma: jobData.gamma}} setMeta={setJobData}/>
-          <IonButton expand='block' onClick={() => setOpened(true)}>Commission</IonButton>
+          <DeviceOrientations data={jobData} meta={{alpha: jobData.alpha, beta: jobData.beta, gamma: jobData.gamma}} setMeta={setJobData} jobValid={jobValid} updateJobValid={updateJobValid}/>
+          <IonButton expand='block' onClick={openCommission}>Commission</IonButton>
         </IonList>
     </ScreenContainer>
     {

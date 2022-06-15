@@ -8,19 +8,10 @@ import ScreenContainer from './Layout/ScreenContainer';
 
 const ExportingComponent = (props: any) => {
   const { account } = AppState();
-  const [submitted, setSubmitted] = useState<boolean>(false);
-  const [loading, setLoading] = useState(false);
-  const [screenMounted, setScreenMounted] = useState(true);
   // eslint-disable-next-line
   const [inBackground, setInBackground] = useState(false);
 
-  const screenProps = {
-    screenMounted,
-    submitted,
-    loadingLocally: loading,
-  };
-
-  return <ScreenContainer {...screenProps}>
+  return <ScreenContainer>
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <IonList className="list-contacts" lines="none">
         <Card title="OCTO Creds" subtitle="Tap to test OCTO login">

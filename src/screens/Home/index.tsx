@@ -9,21 +9,13 @@ import ScreenContainer from './Layout/ScreenContainer';
 import { AppState } from '../../utils/state';
 
 const ExportingComponent = (props: any) => {
-  const [submitted, setSubmitted] = useState<boolean>(false);
-  const [loading, setLoading] = useState(false);
-  const [screenMounted, setScreenMounted] = useState(true);
   // eslint-disable-next-line
   const [inBackground, setInBackground] = useState(false);
 
 
   const { account } = AppState();
-  const screenProps = {
-    screenMounted,
-    submitted,
-    loadingLocally: loading,
-  };
 
-  return <ScreenContainer {...screenProps}>
+  return <ScreenContainer>
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <IonList className="list-contacts" lines="none">
         <Card title="OCTO Commissioning" submit={() => props.history.push(`/octo`)}>

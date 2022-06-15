@@ -107,14 +107,16 @@ const Component = (props: any) => {
     const gamma = (((Math.acos(car.z) - Math.acos(box.z)) * 180) / pi_val)
 
     let final_output = { alpha: parseFloat(alpha.toFixed(1)), beta: parseFloat(beta.toFixed(1)), gamma: parseFloat(gamma.toFixed(1)) };
-    // console.log('Final orientations output', final_output);
-
+    
+    //update the form back on the previous screen.
     props.setMeta(props.identifier, final_output);
     let updatedForm = { ...props.data }
     updatedForm['alpha'] = final_output.alpha;
     updatedForm['beta'] = final_output.beta;
     updatedForm['gamma'] = final_output.gamma;
-    props.setMeta({ ...updatedForm })
+
+    props.setMeta({ ...updatedForm });
+    props.updateJobValid('orientation',true);
     closeModal();
 
   }
@@ -122,7 +124,7 @@ const Component = (props: any) => {
   return <React.Fragment>
     <IonButton expand='block' onClick={openModal}>Get Orientations</IonButton>
     <IonItem>
-      <IonLabel>Device Orientations: {JSON.stringify(props.meta)}</IonLabel>
+      <IonLabel color={props.jobValid.orientation ? "success" : "default"}><b>Device Orientations:</b></IonLabel><IonLabel>{JSON.stringify(props.meta)}</IonLabel>
     </IonItem>
     {
       opened === true && <ScreenModal title={`Device Orientation`} onClose={closeModal} className="commission-modal orientations-modal">

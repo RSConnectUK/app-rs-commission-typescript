@@ -18,9 +18,30 @@ const ExportingComponent = (props: any) => {
   const [activationStatus, SetActivationStatus] = useState<string>();
   const [activationDate, SetActivationDate] = useState<string>();
   const [jobData, setJobData] = useState<any>({ voucher: null, imei: null, serial: null, reg: null, position: null });
+  const [jobValid, setJobValid] = useState<any>({ voucher: false, imei: false, serial: false, reg: false, position: false });
+  const [allValid, setAllValid] = useState(false);
   const [extraDetails, setExtraDetails] = useState<any>([]);
   const assoc = `T2`;
   const install_locations = [`Dash, Passenger Side`, `Dash, Centre`, `Dash, Driver Side`, `Centre Console Front`, `Centre Console Rear`, `Boot, Passenger Side`, `Boot, Centre`, `Boot, Driver Side`, `Engine Bay`];
+
+  const updateJobData = (id: string, val: string) => {
+    let updatedForm = { ...jobData }
+    updatedForm[id] = val;
+    setJobData({ ...updatedForm })
+  }
+
+  const updateJobValid = (id: string, state: boolean) => {
+    let updatedValid = {...jobValid };
+    updatedValid[id] = state;
+    setJobValid({...updatedValid});
+    setAllValid(checkAllValid(updatedValid));
+  }
+
+  const checkAllValid = (updatedValid: any) => {
+    let valid = true;
+    Object.values(updatedValid).forEach(val => {if (val===false) valid = false })
+    return valid;
+  }
 
   const closeModal = () => {
     setOpened(false);
@@ -36,6 +57,17 @@ const ExportingComponent = (props: any) => {
       })
     })
     setExtraDetails(rows);
+  }
+
+  const openCommission = () => {
+    if (!allValid) {
+      showAlert({
+        header: 'Check Fields',
+        message: `Please check all the fields before commissioning`
+      });
+      return false;
+    }
+    setOpened(true);
   }
 
   const submit = async () => {
@@ -143,16 +175,19 @@ const ExportingComponent = (props: any) => {
   //update any of the values of the user form (apart from the postition) into memory
   const onInputChange = (e: any) => {
     const id = e.srcElement.id;
-    let updatedForm = { ...jobData }
-    updatedForm[id] = e.detail.value;
-    setJobData({ ...updatedForm })
+    const val = e.detail.value;
+    
+    updateJobData(id, val);
+    updateJobValid(id,(val.length > 0) ? true : false);
   }
 
   //update the value of the box position variable.
   const onInputPosChange = (e: any) => {
-    let updatedForm = { ...jobData }
-    updatedForm.position = e.detail.value;
-    setJobData({ ...updatedForm })
+    const id = e.srcElement.id;
+    const val = e.detail.value;
+
+    updateJobData(id, val);
+    updateJobValid(id,true);
   }
 
   const screenProps = {  
@@ -160,36 +195,38 @@ const ExportingComponent = (props: any) => {
     updateJobData : (data: any) => setJobData(data)
   }
 
+  const Label = (props: any) => {return <React.Fragment><IonLabel color={props.valid ? "success" : "default"} position="floating"><b>{props.children}</b></IonLabel></React.Fragment>}
+
   return <React.Fragment>
   
     <ScreenContainer {...screenProps}>
         <IonList>
           <IonItem>
-            <IonLabel position="floating">Voucher</IonLabel>
+            <Label valid={jobValid.voucher}>Voucher</Label>
             <IonInput id="voucher" value={jobData.voucher} onIonChange={onInputChange}></IonInput>
           </IonItem>
           <IonItem>
-            <IonLabel position="floating">IMEI</IonLabel>
+            <Label valid={jobValid.imei}>IMEI</Label>
             <IonInput id="imei" value={jobData.imei} onIonChange={onInputChange}></IonInput>
           </IonItem>
           <IonItem>
-            <IonLabel position="floating">Serial</IonLabel>
+            <Label valid={jobValid.serial}>Serial</Label>
             <IonInput id="serial" value={jobData.serial} onIonChange={onInputChange}></IonInput>
           </IonItem>
           <IonItem>
-            <IonLabel position="floating">Car Reg</IonLabel>
+            <Label valid={jobValid.reg}>Car Reg</Label>
             <IonInput id="reg" value={jobData.reg} onIonChange={onInputChange}></IonInput>
           </IonItem>
           <IonItem>
-            <IonLabel position="floating">Position</IonLabel>
-            <IonSelect id="position" onIonChange={onInputPosChange}>
+            <Label valid={jobValid.position}>Position</Label>
+            <IonSelect interface="action-sheet" id="position" onIonChange={onInputPosChange}>
               {
                 Object.entries(install_locations).map((location: any) =>
                 <IonSelectOption>{location[1]}</IonSelectOption>)
               }
             </IonSelect>
           </IonItem>
-          <IonButton expand='block' onClick={() => setOpened(true)}>Commission</IonButton>
+          <IonButton expand='block' onClick={openCommission}>Commission</IonButton>
         </IonList>
     </ScreenContainer>
     {

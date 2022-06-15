@@ -25,6 +25,25 @@ const ExportingComponent = (props: any) => {
   const { account } = AppState();
   const install_locations = [`Dash, Passenger Side`, `Dash, Centre`, `Dash, Driver Side`, `Centre Console Front`, `Centre Console Rear`, `Boot, Passenger Side`, `Boot, Centre`, `Boot, Driver Side`, `Engine Bay`];
 
+  const updateJobData = (id: string, val: string) => {
+    let updatedForm = { ...jobData }
+    updatedForm[id] = val;
+    setJobData({ ...updatedForm })
+  }
+
+  const updateJobValid = (id: string, state: boolean) => {
+    let updatedValid = {...jobValid };
+    updatedValid[id] = state;
+    setJobValid({...updatedValid});
+    setAllValid(checkAllValid(updatedValid));
+  }
+
+  const checkAllValid = (updatedValid: any) => {
+    let valid = true;
+    Object.values(updatedValid).forEach(val => {if (val===false) valid = false })
+    return valid;
+  }
+
   const closeModal = () => {
     setOpened(false);
   }
@@ -39,6 +58,17 @@ const ExportingComponent = (props: any) => {
       })
     })
     setExtraDetails(rows);
+  }
+
+  const openCommission = () => {
+    if (!allValid) {
+      showAlert({
+        header: 'Check Fields',
+        message: `Please check all the fields before commissioning`
+      });
+      return false;
+    }
+    setOpened(true);
   }
 
   const submit = async () => {
@@ -123,33 +153,17 @@ const ExportingComponent = (props: any) => {
     const id = e.srcElement.id;
     const val = e.detail.value;
     
-    let updatedForm = { ...jobData }
-    updatedForm[id] = val;
-    setJobData({ ...updatedForm })
-
-    let updatedValid = {...jobValid };
-    updatedValid[id] = (val.length > 0) ? true : false
-    setJobValid({...updatedValid});
-    checkAllValid(updatedValid);
+    updateJobData(id, val);
+    updateJobValid(id,(val.length > 0) ? true : false);
   }
 
   //update the value of the box position variable.
   const onInputPosChange = (e: any) => {
     const id = e.srcElement.id;
-    let updatedForm = { ...jobData };
-    updatedForm.position = e.detail.value;
-    setJobData({ ...updatedForm });
+    const val = e.detail.value;
 
-    let updatedValid = {...jobValid };
-    updatedValid[id] = true;
-    setJobValid({...updatedValid});
-    checkAllValid(updatedValid);
-  }
-
-  const checkAllValid = (updatedValid: any) => {
-    let valid = true;
-    Object.values(updatedValid).forEach(val => {if (val===false) valid = false })
-    return valid;
+    updateJobData(id, val);
+    updateJobValid(id,true);
   }
 
   const screenProps = {  
@@ -176,14 +190,14 @@ const ExportingComponent = (props: any) => {
           </IonItem>
           <IonItem>
             <Label valid={jobValid.position}>Position</Label>
-            <IonSelect id="position" onIonChange={onInputPosChange}>
+            <IonSelect interface="action-sheet" id="position" onIonChange={onInputPosChange}>
               {
                 Object.entries(install_locations).map((location: any) =>
                 <IonSelectOption>{location[1]}</IonSelectOption>)
               }
             </IonSelect>
           </IonItem>
-          <IonButton expand='block' onClick={() => setOpened(true)}>Commission</IonButton>
+          <IonButton expand='block' onClick={openCommission}>Commission</IonButton>
         </IonList>
     </ScreenContainer>
     {
