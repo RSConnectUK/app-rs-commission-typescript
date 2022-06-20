@@ -33,7 +33,6 @@ const AuthComponent = (props: any) => {
         }
       } catch(err) {
         logError(`MISSING_ENGINEER_DETAILS_WEDNESDAY`, err);
-        // logz io error and send a warning to IT Department.
       }
 
       const accountObject = {
