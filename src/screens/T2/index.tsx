@@ -100,8 +100,7 @@ const ExportingComponent = (props: any) => {
       imei: jobData.imei,
       serial: jobData.serial,
       reg: jobData.reg,
-      sensorPosition: jobData.position,
-      ...coords
+      sensorPosition: jobData.position
     }
 
     setSubmitted(true);

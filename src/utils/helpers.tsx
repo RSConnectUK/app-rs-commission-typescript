@@ -244,14 +244,3 @@ export const getFormTemplates = async (contract_type: any, classification: any, 
     throw err;
   }
 }
-
-export const getUnitType = async (_box_id: string) => {
-    const mess = await Axios(`http://217.8.255.14/Database/RSStockControl/connected/GetUnitType.php`,{
-      method: `POST`,
-      headers: {'content-type':`application/json`},
-      data: {
-        box_id: _box_id
-      }
-    });
-    return mess
-}

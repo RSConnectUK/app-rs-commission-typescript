@@ -1,4 +1,3 @@
-import React, { useState } from 'react'
 import { withRouter } from 'react-router-dom';
 import { IonList } from '@ionic/react';
 import { AppState } from '../../utils/state'
@@ -8,8 +7,6 @@ import ScreenContainer from './Layout/ScreenContainer';
 
 const ExportingComponent = (props: any) => {
   const { account } = AppState();
-  // eslint-disable-next-line
-  const [inBackground, setInBackground] = useState(false);
 
   return <ScreenContainer>
     <div style={{ display: 'flex', flexDirection: 'column' }}>

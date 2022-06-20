@@ -4,7 +4,7 @@ import { IonActionSheet, IonLoading, isPlatform } from '@ionic/react';
 import { IonGrid, IonRow, IonCol, IonIcon, IonButtons, IonButton } from '@ionic/react';
 import { downloadOutline, arrowBackOutline, chevronBack } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
-import { getAssociated } from '../../../utils/helpers';
+import { getAssociated, showAlert } from '../../../utils/helpers';
 
 const TrakScreenContainer = (props: any) => {
   const [menuOpened, setMenuOpened] = useState(false);
@@ -13,7 +13,22 @@ const TrakScreenContainer = (props: any) => {
 
   const history = useHistory();
 
-  const goBack = () => history.goBack();
+  const goBack = () => {
+    showAlert({
+      header:`Confirm`,
+      message: `Leaving this page will clear the form`,
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Confirm',
+          handler: () => {history.goBack()}
+        }
+      ]
+    })
+  }
 
   const loadJobs = async () => {
     setLoading(true);
